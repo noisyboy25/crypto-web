@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import fileUpload, { UploadedFile } from 'express-fileupload';
 import { Readable } from 'stream';
 import Sha256 from '../../lib/sha256';
-import { pipeline } from 'stream/promises';
+import { pipeline } from 'stream';
 
 const PORT = process.env.PORT || 5000;
 
