@@ -51,16 +51,16 @@ const UploadForm = () => {
   return (
     <form className="max-w-xs px-8 pt-6 pb-8">
       <input className="mb-4" type="file" {...register('file')} />
-      <div className="flex justify-between mb-6">
+      <div className="flex mb-6">
         <button
-          className="bg-blue-500 rounded text-white py-2 px-4 font-bold"
+          className="bg-blue-500 rounded-l text-white py-2 px-4 font-bold hover:bg-blue-700"
           value="Encrypt"
           onClick={handleSubmit(onEncrypt)}
         >
           <FontAwesomeIcon icon={faFileArrowDown} /> Encrypt
         </button>
         <button
-          className="bg-blue-500 rounded text-white py-2 px-4 font-bold"
+          className="bg-blue-500 rounded-r text-white py-2 px-4 font-bold hover:bg-blue-700"
           value="Decrypt"
           onClick={handleSubmit(onDecrypt)}
         >
@@ -68,9 +68,10 @@ const UploadForm = () => {
         </button>
       </div>
       <a
-        className={`block rounded border-2 p-2 ${
+        className={`block rounded border-2 p-2 hover:bg-gray-200 ${
           !url && 'bg-gray-200 text-gray-400'
         }`}
+        style={{ pointerEvents: url ? 'auto' : 'none' }}
         href={url}
         download={fileName.current}
         ref={link}
