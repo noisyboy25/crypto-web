@@ -1,3 +1,13 @@
+import {
+  faCloudDownload,
+  faCloudDownloadAlt,
+  faFileArrowDown,
+  faFileArrowUp,
+  faFileDownload,
+  faFileExport,
+  faFileImport,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -18,8 +28,8 @@ const UploadForm = () => {
     });
 
     const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    setUrl(url);
+    const blobUrl = URL.createObjectURL(blob);
+    setUrl(blobUrl);
     fileName.current = mode === 'enc' ? 'file.bin' : 'file.txt';
     console.log(blob);
   };
@@ -39,15 +49,34 @@ const UploadForm = () => {
   };
 
   return (
-    <form>
-      <input type="file" {...register('file')} />
-      <input type="submit" value="Encrypt" onClick={handleSubmit(onEncrypt)} />
-      <input type="submit" value="Decrypt" onClick={handleSubmit(onDecrypt)} />
-      <div>
-        <a href={url} download={fileName.current} ref={link}>
-          Download
-        </a>
+    <form className="max-w-xs px-8 pt-6 pb-8">
+      <input className="mb-4" type="file" {...register('file')} />
+      <div className="flex justify-between mb-6">
+        <button
+          className="bg-blue-500 rounded text-white py-2 px-4 font-bold"
+          value="Encrypt"
+          onClick={handleSubmit(onEncrypt)}
+        >
+          <FontAwesomeIcon icon={faFileArrowDown} /> Encrypt
+        </button>
+        <button
+          className="bg-blue-500 rounded text-white py-2 px-4 font-bold"
+          value="Decrypt"
+          onClick={handleSubmit(onDecrypt)}
+        >
+          <FontAwesomeIcon icon={faFileArrowUp} /> Decrypt
+        </button>
       </div>
+      <a
+        className={`block rounded border-2 p-2 ${
+          !url && 'bg-gray-200 text-gray-400'
+        }`}
+        href={url}
+        download={fileName.current}
+        ref={link}
+      >
+        <FontAwesomeIcon icon={faCloudDownload} /> Download {fileName.current}
+      </a>
     </form>
   );
 };

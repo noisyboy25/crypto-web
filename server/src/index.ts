@@ -30,7 +30,10 @@ app.post('/api/enc', (req, res) => {
     pipeline(
       Readable.from((req.files.file as UploadedFile).data),
       sha256.encrypt(key),
-      res
+      res,
+      (err) => {
+        if (err) console.log(err);
+      }
     );
   }
 });
@@ -41,7 +44,10 @@ app.post('/api/dec', (req, res) => {
     pipeline(
       Readable.from((req.files.file as UploadedFile).data),
       sha256.decrypt(key),
-      res
+      res,
+      (err) => {
+        if (err) console.log(err);
+      }
     );
   }
 });
