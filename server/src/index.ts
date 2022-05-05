@@ -61,7 +61,3 @@ app.post('/api/dec', (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
-
-// const encrypted = fs.createReadStream('plain.txt').pipe(encrypt);
-// encrypted.pipe(fs.createWriteStream('encrypted.bin'));
-// encrypted.pipe(decrypt).pipe(fs.createWriteStream('result.txt'));
