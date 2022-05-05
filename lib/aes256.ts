@@ -1,6 +1,6 @@
 import crypto, { BinaryLike, CipherKey } from 'crypto';
 
-export default class Sha256 {
+export default class Aes256 {
   algorithm: string;
   iv: BinaryLike;
 
@@ -14,4 +14,6 @@ export default class Sha256 {
 
   decrypt = (key: CipherKey) =>
     crypto.createDecipheriv(this.algorithm, key, this.iv);
+
+  static randIV = () => crypto.randomBytes(16);
 }
