@@ -21,9 +21,12 @@ const UploadForm = () => {
     const url = URL.createObjectURL(blob);
     setUrl(url);
     fileName.current = mode === 'enc' ? 'file.bin' : 'file.txt';
-    link.current?.click();
     console.log(blob);
   };
+
+  useEffect(() => {
+    if (url) link.current?.click();
+  }, [url]);
 
   const onEncrypt = (data: any) => {
     uploadFiles(data.file[0], 'enc');
