@@ -1,3 +1,4 @@
+import { Box, Button, ButtonGroup, FormControl, Input } from '@chakra-ui/react';
 import {
   faCloudDownload,
   faFileArrowDown,
@@ -7,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-const UploadForm = () => {
+export const UploadForm = () => {
   const [url, setUrl] = useState('');
   const fileName = useRef('');
   const link = useRef<HTMLAnchorElement>(null);
@@ -45,37 +46,40 @@ const UploadForm = () => {
   };
 
   return (
-    <form className="max-w-xs px-8 pt-6 pb-8">
-      <input className="mb-4" type="file" {...register('file')} />
-      <div className="flex mb-6">
-        <button
-          className="bg-blue-500 rounded-l text-white py-2 px-4 font-bold hover:bg-blue-700"
-          value="Encrypt"
+    <Box>
+      <FormControl>
+        <Input type="file" {...register('file')} />
+      </FormControl>
+      <ButtonGroup isAttached variant="outline" mt={4}>
+        <Button
           onClick={handleSubmit(onEncrypt)}
+          leftIcon={<FontAwesomeIcon icon={faFileArrowDown} />}
         >
-          <FontAwesomeIcon icon={faFileArrowDown} /> Encrypt
-        </button>
-        <button
-          className="bg-blue-500 rounded-r text-white py-2 px-4 font-bold hover:bg-blue-700"
-          value="Decrypt"
+          Encrypt
+        </Button>
+        <Button
           onClick={handleSubmit(onDecrypt)}
+          leftIcon={<FontAwesomeIcon icon={faFileArrowUp} />}
         >
-          <FontAwesomeIcon icon={faFileArrowUp} /> Decrypt
-        </button>
-      </div>
+          Decrypt
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup colorScheme={'blue'} ml={2} mt={4}>
+        <Button
+          isDisabled={!url}
+          leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
+        >
+          Download
+        </Button>
+      </ButtonGroup>
       <a
-        className={`block rounded border-2 p-2 hover:bg-gray-200 ${
-          !url && 'bg-gray-200 text-gray-400'
-        }`}
-        style={{ pointerEvents: url ? 'auto' : 'none' }}
+        style={{ display: 'none' }}
         href={url}
         download={fileName.current}
         ref={link}
       >
-        <FontAwesomeIcon icon={faCloudDownload} /> Download {fileName.current}
+        Download
       </a>
-    </form>
+    </Box>
   );
 };
-
-export default UploadForm;
