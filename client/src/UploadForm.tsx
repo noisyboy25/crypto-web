@@ -1,14 +1,10 @@
 import {
   faCloudDownload,
-  faCloudDownloadAlt,
   faFileArrowDown,
   faFileArrowUp,
-  faFileDownload,
-  faFileExport,
-  faFileImport,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const UploadForm = () => {
