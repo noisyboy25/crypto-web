@@ -13,7 +13,7 @@ export const UploadForm = () => {
   const fileName = useRef('');
   const link = useRef<HTMLAnchorElement>(null);
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const uploadFiles = async (data: any, mode: 'enc' | 'dec' = 'enc') => {
     const formData = new FormData();
@@ -33,7 +33,9 @@ export const UploadForm = () => {
 
   useEffect(() => {
     if (url) link.current?.click();
-  }, [url]);
+    reset({ file: null });
+    console.log('reset');
+  }, [url, reset]);
 
   const onEncrypt = (data: any) => {
     uploadFiles(data.file[0], 'enc');
@@ -48,9 +50,9 @@ export const UploadForm = () => {
   return (
     <Box>
       <FormControl>
-        <Input type="file" {...register('file')} />
+        <Input isRequired type="file" {...register('file')} />
       </FormControl>
-      <ButtonGroup isAttached variant="outline" mt={4}>
+      <ButtonGroup isAttached colorScheme="blue" mt={4}>
         <Button
           onClick={handleSubmit(onEncrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowDown} />}
@@ -64,7 +66,7 @@ export const UploadForm = () => {
           Decrypt
         </Button>
       </ButtonGroup>
-      <ButtonGroup colorScheme={'blue'} ml={2} mt={4}>
+      <ButtonGroup ml={2} mt={4}>
         <Button
           isDisabled={!url}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
