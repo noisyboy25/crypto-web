@@ -10,21 +10,37 @@ import {
   TabPanel,
   Tabs,
   Text,
+  Icon,
   theme,
 } from '@chakra-ui/react';
+import {
+  faClockRotateLeft,
+  faKey,
+  faUserGroup,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { UploadForm } from './UploadForm';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
     <Tabs variant="solid-rounded" colorScheme="blue" orientation="vertical">
-      <Grid minH="100vh" templateColumns="repeat(5, 1fr)">
-        <GridItem colSpan={1} p={4}>
-          <Flex flexDirection="column" minH="100%" gap={4}>
+      <Grid minH="100vh" templateColumns="repeat(5, 1fr)" p={6} gap={10}>
+        <GridItem colSpan={1}>
+          <Flex flexDirection="column" minH="100%" pt={3}>
             <TabList gap={4}>
-              <Tab>Encrypt</Tab>
-              <Tab>Tab 2</Tab>
-              <Tab>Tab 3</Tab>
+              <Tab justifyContent="left">
+                <Icon as={FontAwesomeIcon} icon={faKey} m={2} />
+                Encryption
+              </Tab>
+              <Tab justifyContent="left">
+                <Icon as={FontAwesomeIcon} icon={faClockRotateLeft} m={2} />
+                History
+              </Tab>
+              <Tab justifyContent="left">
+                <Icon as={FontAwesomeIcon} icon={faUserGroup} m={2} />
+                Users
+              </Tab>
             </TabList>
             <Spacer />
             <ColorModeSwitcher alignSelf="start" />

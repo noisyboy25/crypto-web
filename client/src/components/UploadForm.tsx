@@ -1,4 +1,10 @@
-import { Box, Button, ButtonGroup, FormControl, Input } from '@chakra-ui/react';
+import {
+  Button,
+  ButtonGroup,
+  Flex,
+  FormControl,
+  Input,
+} from '@chakra-ui/react';
 import {
   faCloudDownload,
   faFileArrowDown,
@@ -48,11 +54,11 @@ export const UploadForm = () => {
   };
 
   return (
-    <Box>
+    <Flex flexDirection="column" gap={4}>
       <FormControl>
         <Input isRequired type="file" {...register('file')} />
       </FormControl>
-      <ButtonGroup isAttached colorScheme="blue" mt={4}>
+      <ButtonGroup isAttached colorScheme="blue">
         <Button
           onClick={handleSubmit(onEncrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowDown} />}
@@ -66,7 +72,7 @@ export const UploadForm = () => {
           Decrypt
         </Button>
       </ButtonGroup>
-      <ButtonGroup ml={2} mt={4}>
+      <ButtonGroup>
         <Button
           isDisabled={!url}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
@@ -82,6 +88,6 @@ export const UploadForm = () => {
       >
         Download
       </a>
-    </Box>
+    </Flex>
   );
 };
