@@ -11,7 +11,7 @@ import {
   faFileArrowUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const UploadForm = () => {
@@ -37,11 +37,15 @@ export const UploadForm = () => {
     console.log(blob);
   };
 
-  useEffect(() => {
+  const downloadBlob = useCallback(async () => {
     if (url) link.current?.click();
+  }, [url]);
+
+  useEffect(() => {
+    downloadBlob();
     reset({ file: null });
     console.log('reset');
-  }, [url, reset]);
+  }, [url, reset, downloadBlob]);
 
   const onEncrypt = (data: any) => {
     uploadFiles(data.file[0], 'enc');
@@ -74,10 +78,11 @@ export const UploadForm = () => {
       </ButtonGroup>
       <ButtonGroup>
         <Button
+          onClick={downloadBlob}
           isDisabled={!url}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
         >
-          Download
+          Download {fileName.current}
         </Button>
       </ButtonGroup>
       <a
