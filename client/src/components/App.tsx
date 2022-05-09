@@ -52,9 +52,9 @@ export const App = () => (
               <UploadForm />
             </TabPanel>
             <TabPanel>
-              <Text>Tab 2</Text>
+              <Text>History</Text>
             </TabPanel>
-            <TabPanel>Tab 3</TabPanel>
+            <TabPanel>Users</TabPanel>
           </TabPanels>
         </GridItem>
       </Grid>

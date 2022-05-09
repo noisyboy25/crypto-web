@@ -30,6 +30,8 @@ export const UploadForm = () => {
       body: formData,
     });
 
+    if (!res.ok) return;
+
     const blob = await res.blob();
     const blobUrl = URL.createObjectURL(blob);
     setUrl(blobUrl);
