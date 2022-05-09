@@ -3,7 +3,7 @@
     "start": "cd server && yarn start ",
     "dev:client": "cd client && yarn start",
     "dev:server": "cd server && yarn dev",
-    "dev": "run-p -l dev:*"
+    "dev": "run-p -l 'dev:*'"
   },
   "private": true,
   "workspaces": [
