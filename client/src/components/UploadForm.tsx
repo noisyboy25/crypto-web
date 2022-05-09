@@ -33,10 +33,13 @@ export const UploadForm = () => {
 
     const blob = await res.blob();
     const blobUrl = URL.createObjectURL(blob);
-    setKeyFileUrl(blobUrl);
 
     const disposition = res.headers.get('Content-Disposition');
-    keyFileName.current = disposition?.split(';')[1].split('=')[1] || '';
+    const match = /filename=(.*)/.exec(disposition || '');
+    if (!(match && match[1])) return;
+
+    setKeyFileUrl(blobUrl);
+    keyFileName.current = decodeURIComponent(match[1] || '');
   };
   useEffect(() => {
     if (keyFileUrl) keyFileLink.current!.click();
@@ -59,10 +62,10 @@ export const UploadForm = () => {
     const blob = await res.blob();
     const blobUrl = `${URL.createObjectURL(blob)}`;
     const disposition = res.headers.get('Content-Disposition');
-    fileName.current = decodeURIComponent(
-      disposition?.split(';')[1].split('=')[1] || ''
-    );
+    const match = /filename=(.*)/.exec(disposition || '');
+    if (!(match && match[1])) return;
 
+    fileName.current = decodeURIComponent(match[1] || '');
     console.log(fileName.current);
 
     setFileUrl(blobUrl);
