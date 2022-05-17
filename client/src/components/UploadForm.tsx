@@ -99,7 +99,7 @@ export const UploadForm = () => {
           onClick={getKey}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
         >
-          Generate key
+          Создать ключ
         </Button>
       </ButtonGroup>
       <FormControl>
@@ -113,13 +113,13 @@ export const UploadForm = () => {
           onClick={handleSubmit(onEncrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowDown} />}
         >
-          Encrypt
+          Зашифровать
         </Button>
         <Button
           onClick={handleSubmit(onDecrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowUp} />}
         >
-          Decrypt
+          Расшифровать
         </Button>
       </ButtonGroup>
       <ButtonGroup>
@@ -130,7 +130,7 @@ export const UploadForm = () => {
           isDisabled={!fileUrl}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
         >
-          Download {fileName.current}
+          Загрузить {fileName.current}
         </Button>
       </ButtonGroup>
       <a
@@ -139,7 +139,7 @@ export const UploadForm = () => {
         download={keyFileName.current}
         ref={keyFileLink}
       >
-        Download key
+        Сохранить ключ
       </a>
       <a
         style={{ display: 'none' }}
@@ -147,7 +147,7 @@ export const UploadForm = () => {
         download={fileName.current}
         ref={fileLink}
       >
-        Download
+        Сохранить
       </a>
     </Flex>
   );

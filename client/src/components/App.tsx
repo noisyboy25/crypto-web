@@ -31,15 +31,15 @@ export const App = () => (
             <TabList gap={4}>
               <Tab justifyContent="left">
                 <Icon as={FontAwesomeIcon} icon={faKey} m={2} />
-                Encryption
+                Шифрование
               </Tab>
               <Tab justifyContent="left">
                 <Icon as={FontAwesomeIcon} icon={faClockRotateLeft} m={2} />
-                History
+                Журнал
               </Tab>
               <Tab justifyContent="left">
                 <Icon as={FontAwesomeIcon} icon={faUserGroup} m={2} />
-                Users
+                Пользователи
               </Tab>
             </TabList>
             <Spacer />
