@@ -18,6 +18,8 @@ import { useTranslation } from 'react-i18next';
 export const UploadForm = () => {
   const [fileUrl, setFileUrl] = useState('');
   const [keyFileUrl, setKeyFileUrl] = useState('');
+  const [loadingKey, setLoadingKey] = useState(false);
+  const [loadingFile, setLoadingFile] = useState(false);
 
   const fileName = useRef('');
   const keyFileName = useRef('');
@@ -30,7 +32,9 @@ export const UploadForm = () => {
   const { t } = useTranslation();
 
   const getKey = async () => {
+    setLoadingKey(true);
     const res = await fetch('/api/key');
+    setLoadingKey(false);
 
     if (!res.ok) return;
 
@@ -55,10 +59,12 @@ export const UploadForm = () => {
     formData.append('file', data.file[0]);
     formData.append('keyFile', data.keyFile[0]);
 
+    setLoadingFile(true);
     const res = await fetch(`/api/${mode}`, {
       method: 'POST',
       body: formData,
     });
+    setLoadingFile(false);
 
     if (!res.ok) return;
 
@@ -101,6 +107,7 @@ export const UploadForm = () => {
         <Button
           onClick={getKey}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
+          isLoading={loadingKey}
         >
           {t('Generate Key')}
         </Button>
@@ -115,12 +122,14 @@ export const UploadForm = () => {
         <Button
           onClick={handleSubmit(onEncrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowDown} />}
+          isLoading={loadingFile}
         >
           {t('Encrypt')}
         </Button>
         <Button
           onClick={handleSubmit(onDecrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowUp} />}
+          isLoading={loadingFile}
         >
           {t('Decrypt')}
         </Button>
