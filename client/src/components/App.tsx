@@ -19,7 +19,6 @@ import {
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { UploadForm } from './UploadForm';
@@ -27,11 +26,7 @@ import '../i18n';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export const App = () => {
-  const { t, i18n } = useTranslation();
-
-  useEffect(() => {
-    i18n.changeLanguage('ru');
-  }, [i18n]);
+  const { t } = useTranslation();
 
   return (
     <ChakraProvider theme={theme}>
