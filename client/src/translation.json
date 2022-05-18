@@ -1,0 +1,15 @@
+{
+  "ru": {
+    "translation": {
+      "Encryption": "Шифрование",
+      "History": "Журнал",
+      "Users": "Пользователи",
+      "Generate Key": "Создать ключ",
+      "Encrypt": "Зашифровать",
+      "Decrypt": "Расшифровать",
+      "Download": "Загрузить",
+      "Download key file": "Загрузить файл ключа",
+      "Download file": "Загрузить файл"
+    }
+  }
+}

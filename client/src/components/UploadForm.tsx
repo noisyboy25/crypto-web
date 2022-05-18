@@ -13,6 +13,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 export const UploadForm = () => {
   const [fileUrl, setFileUrl] = useState('');
@@ -25,6 +26,8 @@ export const UploadForm = () => {
   const keyFileLink = useRef<HTMLAnchorElement>(null);
 
   const { register, handleSubmit, reset } = useForm();
+
+  const { t } = useTranslation();
 
   const getKey = async () => {
     const res = await fetch('/api/key');
@@ -99,7 +102,7 @@ export const UploadForm = () => {
           onClick={getKey}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
         >
-          Создать ключ
+          {t('Generate Key')}
         </Button>
       </ButtonGroup>
       <FormControl>
@@ -113,13 +116,13 @@ export const UploadForm = () => {
           onClick={handleSubmit(onEncrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowDown} />}
         >
-          Зашифровать
+          {t('Encrypt')}
         </Button>
         <Button
           onClick={handleSubmit(onDecrypt)}
           leftIcon={<FontAwesomeIcon icon={faFileArrowUp} />}
         >
-          Расшифровать
+          {t('Decrypt')}
         </Button>
       </ButtonGroup>
       <ButtonGroup>
@@ -130,7 +133,7 @@ export const UploadForm = () => {
           isDisabled={!fileUrl}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
         >
-          Загрузить {fileName.current}
+          {t('Download')} {fileName.current}
         </Button>
       </ButtonGroup>
       <a
@@ -139,7 +142,7 @@ export const UploadForm = () => {
         download={keyFileName.current}
         ref={keyFileLink}
       >
-        Сохранить ключ
+        {t('Download key file')}
       </a>
       <a
         style={{ display: 'none' }}
@@ -147,7 +150,7 @@ export const UploadForm = () => {
         download={fileName.current}
         ref={fileLink}
       >
-        Сохранить
+        {t('Download file')}
       </a>
     </Flex>
   );
