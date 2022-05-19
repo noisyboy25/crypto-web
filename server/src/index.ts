@@ -86,7 +86,10 @@ app.post('/api/enc', (req, res) => {
           `attachment; filename=${encodeURIComponent(info.filename)}.crb`
         );
 
-        const writeable = fs.createWriteStream(`${info.filename}.crb`);
+        if (!fs.existsSync(TMP_DIR)) fs.mkdirSync(TMP_DIR);
+        const writeable = fs.createWriteStream(
+          `${TMP_DIR}/${info.filename}.crb`
+        );
 
         pipeline(
           file,
@@ -147,8 +150,9 @@ app.post('/api/dec', (req, res) => {
           )}`
         );
 
+        if (!fs.existsSync(TMP_DIR)) fs.mkdirSync(TMP_DIR);
         const writeable = fs.createWriteStream(
-          `${info.filename.replace(/.crb$/, '')}`
+          `${TMP_DIR}/${info.filename.replace(/.crb$/, '')}`
         );
 
         pipeline(
