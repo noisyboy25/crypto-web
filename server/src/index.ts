@@ -1,15 +1,26 @@
 import crypto from 'crypto';
 import express from 'express';
 import morgan from 'morgan';
-import fileUpload, { UploadedFile } from 'express-fileupload';
-import { Readable } from 'stream';
 import Aes256 from '../../lib/aes256';
-import { pipeline } from 'stream';
+import { pipeline, Stream } from 'stream';
 import compression from 'compression';
+import fs from 'fs';
+import busboy from 'busboy';
 
 const PORT = process.env.PORT || 5000;
 
 let secret = 'secret';
+
+const TMP_DIR = process.env.TMP_DIR || '../tmp';
+
+const streamToString = (stream: Stream) => {
+  const chunks: Buffer[] = [];
+  return new Promise<string>((resolve, reject) => {
+    stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('error', (err) => reject(err));
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+  });
+};
 
 const parseKey = (text: string) => {
   const parsed = JSON.parse(text);
@@ -19,7 +30,6 @@ const parseKey = (text: string) => {
 const app = express();
 
 app.use(morgan('dev'));
-app.use(fileUpload());
 app.use(compression());
 
 app.get('/test', (req, res) => {
@@ -40,62 +50,123 @@ app.get('/api/key', (req, res) => {
 });
 
 app.post('/api/enc', (req, res) => {
-  if (req.files) {
-    console.log(req.files);
+  const bb = busboy({
+    headers: {
+      'content-type': (req.headers['Content-Type'] ||
+        req.headers['content-type']) as string,
+    },
+  });
 
-    if (!(req.files.keyFile && req.files.file)) return res.sendStatus(400);
-    const file = <UploadedFile>req.files.file;
-    const keyFile = <UploadedFile>req.files.keyFile;
+  req.pipe(bb);
 
-    const { iv, key } = parseKey(keyFile.data.toString());
+  let parsedKey: { key: string; iv: Buffer };
 
-    console.log({ iv, key });
+  bb.on('file', (name, file, info: any) => {
+    console.log(info);
 
-    const sha256 = new Aes256(iv);
+    if (name === 'keyFile') {
+      streamToString(file).then((text) => {
+        parsedKey = parseKey(text);
+      });
 
-    console.log(`attachment; filename=${encodeURIComponent(file.name)}.crb`);
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename=${encodeURIComponent(file.name)}.crb`
-    );
+      return;
+    }
 
-    pipeline(
-      Readable.from((req.files.file as UploadedFile).data),
-      sha256.encrypt(key),
-      res,
-      (err) => {
-        if (err) console.log(err);
+    const encryptFile = () => {
+      if (!parsedKey) {
+        setTimeout(() => encryptFile(), 500);
+      } else {
+        const aes256 = new Aes256(parsedKey.iv);
+
+        console.log(
+          `attachment; filename=${encodeURIComponent(info.filename)}.crb`
+        );
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename=${encodeURIComponent(info.filename)}.crb`
+        );
+
+        const writeable = fs.createWriteStream(`${info.filename}.crb`);
+
+        pipeline(
+          file,
+          aes256.encrypt(parsedKey.key),
+          writeable,
+          // res,
+          (err) => {
+            if (err) return console.log(err);
+            res.sendStatus(200);
+          }
+        );
       }
-    );
-  }
+    };
+    encryptFile();
+  });
+
+  bb.on('finish', () => res.status(200));
 });
 
 app.post('/api/dec', (req, res) => {
-  if (req.files) {
-    console.log(req.files.file);
+  const bb = busboy({
+    headers: {
+      'content-type': (req.headers['Content-Type'] ||
+        req.headers['content-type']) as string,
+    },
+  });
 
-    if (!(req.files.keyFile && req.files.file)) return res.sendStatus(400);
+  req.pipe(bb);
 
-    const file = <UploadedFile>req.files.file;
-    const keyFile = <UploadedFile>req.files.keyFile;
+  let parsedKey: { key: string; iv: Buffer };
 
-    const { iv, key } = parseKey(keyFile.data.toString());
+  bb.on('file', (name, file, info: any) => {
+    console.log(info);
 
-    const sha256 = new Aes256(iv);
+    if (name === 'keyFile') {
+      streamToString(file).then((text) => {
+        parsedKey = parseKey(text);
+      });
 
-    console.log(`attachment; filename=${file.name}.crb`);
+      return;
+    }
 
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename=${encodeURIComponent(
-        file.name.replace(/.crb$/, '')
-      )}`
-    );
+    const decryptFile = () => {
+      if (!parsedKey) {
+        setTimeout(() => decryptFile(), 500);
+      } else {
+        const aes256 = new Aes256(parsedKey.iv);
 
-    pipeline(Readable.from(file.data), sha256.decrypt(key), res, (err) => {
-      if (err) console.log(err);
-    });
-  }
+        console.log(
+          `attachment; filename=${encodeURIComponent(
+            info.filename.replace(/.crb$/, '')
+          )}`
+        );
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename=${encodeURIComponent(
+            info.filename.replace(/.crb$/, '')
+          )}`
+        );
+
+        const writeable = fs.createWriteStream(
+          `${info.filename.replace(/.crb$/, '')}`
+        );
+
+        pipeline(
+          file,
+          aes256.decrypt(parsedKey.key),
+          writeable,
+          // res,
+          (err) => {
+            if (err) return console.log(err);
+            res.sendStatus(200);
+          }
+        );
+      }
+    };
+    decryptFile();
+  });
+
+  bb.on('finish', () => res.status(200));
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

@@ -11,23 +11,18 @@ import {
   faFileArrowUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 export const UploadForm = () => {
-  const [fileUrl, setFileUrl] = useState('');
-  const [keyFileUrl, setKeyFileUrl] = useState('');
   const [loadingKey, setLoadingKey] = useState(false);
   const [loadingFile, setLoadingFile] = useState(false);
 
   const fileName = useRef('');
   const keyFileName = useRef('');
 
-  const fileLink = useRef<HTMLAnchorElement>(null);
-  const keyFileLink = useRef<HTMLAnchorElement>(null);
-
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const { t } = useTranslation();
 
@@ -38,58 +33,49 @@ export const UploadForm = () => {
 
     if (!res.ok) return;
 
-    const blob = await res.blob();
-    const blobUrl = URL.createObjectURL(blob);
-
     const disposition = res.headers.get('Content-Disposition');
     const match = /filename=(.*)/.exec(disposition || '');
     if (!(match && match[1])) return;
 
-    setKeyFileUrl(blobUrl);
     keyFileName.current = decodeURIComponent(match[1] || '');
   };
-  useEffect(() => {
-    if (keyFileUrl) keyFileLink.current!.click();
-  }, [keyFileUrl]);
+
+  const readChunks = (reader: any) => {
+    return {
+      async *[Symbol.asyncIterator]() {
+        let readResult = await reader.read();
+        while (!readResult.done) {
+          yield readResult.value;
+          readResult = await reader.read();
+        }
+      },
+    };
+  };
 
   const uploadFiles = async (data: any, mode: 'enc' | 'dec' = 'enc') => {
     const formData = new FormData();
-    console.log(data);
 
-    formData.append('file', data.file[0]);
     formData.append('keyFile', data.keyFile[0]);
+    formData.append('file', data.file[0]);
 
     setLoadingFile(true);
     const res = await fetch(`/api/${mode}`, {
       method: 'POST',
       body: formData,
     });
+
+    const reader = res.body?.getReader();
+    for await (const chunk of readChunks(reader)) {
+      console.log(chunk);
+    }
     setLoadingFile(false);
 
     if (!res.ok) return;
-
-    const blob = await res.blob();
-    const blobUrl = `${URL.createObjectURL(blob)}`;
-    const disposition = res.headers.get('Content-Disposition');
-    const match = /filename=(.*)/.exec(disposition || '');
-    if (!(match && match[1])) return;
-
-    fileName.current = decodeURIComponent(match[1] || '');
-    console.log(fileName.current);
-
-    setFileUrl(blobUrl);
-    console.log(blob);
   };
 
   const downloadBlob = async () => {
-    if (fileUrl) fileLink.current!.click();
+    // TODO
   };
-
-  useEffect(() => {
-    if (fileUrl) fileLink.current!.click();
-    reset({ file: null });
-    console.log('reset');
-  }, [fileUrl, reset]);
 
   const onEncrypt = (data: any) => {
     console.log(data);
@@ -139,28 +125,11 @@ export const UploadForm = () => {
           overflow="hidden"
           justifyContent="flex-start"
           onClick={downloadBlob}
-          isDisabled={!fileUrl}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
         >
           {t('Download')} {fileName.current}
         </Button>
       </ButtonGroup>
-      <a
-        href={keyFileUrl}
-        style={{ display: 'none' }}
-        download={keyFileName.current}
-        ref={keyFileLink}
-      >
-        {t('Download key file')}
-      </a>
-      <a
-        style={{ display: 'none' }}
-        href={fileUrl}
-        download={fileName.current}
-        ref={fileLink}
-      >
-        {t('Download file')}
-      </a>
     </Flex>
   );
 };
