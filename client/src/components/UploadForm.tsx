@@ -11,16 +11,19 @@ import {
   faFileArrowUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 export const UploadForm = () => {
   const [loadingKey, setLoadingKey] = useState(false);
   const [loadingFile, setLoadingFile] = useState(false);
+  const [fileUrl, setFileUrl] = useState('');
 
   const fileName = useRef('');
   const keyFileName = useRef('');
+
+  const downloadLink = useRef<HTMLAnchorElement>(null);
 
   const { register, handleSubmit } = useForm();
 
@@ -40,18 +43,6 @@ export const UploadForm = () => {
     keyFileName.current = decodeURIComponent(match[1] || '');
   };
 
-  const readChunks = (reader: any) => {
-    return {
-      async *[Symbol.asyncIterator]() {
-        let readResult = await reader.read();
-        while (!readResult.done) {
-          yield readResult.value;
-          readResult = await reader.read();
-        }
-      },
-    };
-  };
-
   const uploadFiles = async (data: any, mode: 'enc' | 'dec' = 'enc') => {
     const formData = new FormData();
 
@@ -64,18 +55,20 @@ export const UploadForm = () => {
       body: formData,
     });
 
-    const reader = res.body?.getReader();
-    for await (const chunk of readChunks(reader)) {
-      console.log(chunk);
-    }
-    setLoadingFile(false);
-
     if (!res.ok) return;
+
+    const { filename } = await res.json();
+
+    setFileUrl(`/tmp/${filename}`);
+
+    console.log(filename);
+
+    setLoadingFile(false);
   };
 
-  const downloadBlob = async () => {
-    // TODO
-  };
+  const downloadFile = useCallback(async () => {
+    if (fileUrl && downloadLink.current) downloadLink.current.click();
+  }, [fileUrl]);
 
   const onEncrypt = (data: any) => {
     console.log(data);
@@ -86,6 +79,12 @@ export const UploadForm = () => {
     console.log(data);
     uploadFiles(data, 'dec');
   };
+
+  useEffect(() => {
+    (async () => {
+      await downloadFile();
+    })();
+  }, [fileUrl, downloadFile]);
 
   return (
     <Flex flexDirection="column" gap={4}>
@@ -124,12 +123,15 @@ export const UploadForm = () => {
         <Button
           overflow="hidden"
           justifyContent="flex-start"
-          onClick={downloadBlob}
+          onClick={downloadFile}
           leftIcon={<FontAwesomeIcon icon={faCloudDownload} />}
         >
           {t('Download')} {fileName.current}
         </Button>
       </ButtonGroup>
+      <a ref={downloadLink} download={fileName.current} href={fileUrl}>
+        Download file
+      </a>
     </Flex>
   );
 };
