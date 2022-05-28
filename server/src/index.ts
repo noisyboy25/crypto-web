@@ -32,7 +32,7 @@ const parseKey = (text: string) => {
 const app = express();
 
 app.use(morgan('dev'));
-app.use('/tmp', express.static(TMP_PATH));
+// app.use('/tmp', express.static(TMP_PATH));
 app.use(compression());
 
 const processFile = (
@@ -105,9 +105,14 @@ const processFile = (
 app.get('/tmp/:filename', (req, res) => {
   const { filename } = req.params;
 
-  if (!fs.existsSync(path.join(TMP_PATH, filename))) return res.sendStatus(404);
+  const filePath = path.join(TMP_PATH, filename);
 
-  res.sendFile(path.join(TMP_PATH, filename));
+  if (!fs.existsSync(filePath)) return res.sendStatus(404);
+
+  res.sendFile(filePath, (err) => {
+    fs.rmSync(filePath);
+    console.log(`File ${filePath} deleted successfully`);
+  });
 });
 
 app.get('/api/key', (req, res) => {
