@@ -134,10 +134,21 @@ export const UploadForm = () => {
           {t("Download")} {fileName.current}
         </Button>
       </ButtonGroup>
-      <a ref={fileDownloadLink} download={fileName.current} href={fileUrl}>
+      <a
+        style={{ display: 'none' }}
+        ref={fileDownloadLink}
+        download={fileName.current}
+        href={fileUrl}
+      >
         Download file
       </a>
-      <a ref={keyDownloadLink} download={keyFileName.current} href={keyFileUrl}>
+
+      <a
+        style={{ display: 'none' }}
+        ref={keyDownloadLink}
+        download={keyFileName.current}
+        href={keyFileUrl}
+      >
         Download key file
       </a>
     </Flex>
