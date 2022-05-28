@@ -19,11 +19,13 @@ export const UploadForm = () => {
   const [loadingKey, setLoadingKey] = useState(false);
   const [loadingFile, setLoadingFile] = useState(false);
   const [fileUrl, setFileUrl] = useState('');
+  const [keyFileUrl, setKeyFileUrl] = useState('');
 
   const fileName = useRef('');
   const keyFileName = useRef('');
 
-  const downloadLink = useRef<HTMLAnchorElement>(null);
+  const fileDownloadLink = useRef<HTMLAnchorElement>(null);
+  const keyDownloadLink = useRef<HTMLAnchorElement>(null);
 
   const { register, handleSubmit } = useForm();
 
@@ -41,6 +43,9 @@ export const UploadForm = () => {
     if (!(match && match[1])) return;
 
     keyFileName.current = decodeURIComponent(match[1] || '');
+    const url = URL.createObjectURL(await res.blob());
+    setKeyFileUrl(url);
+    keyDownloadLink.current?.click();
   };
 
   const uploadFiles = async (data: any, mode: 'enc' | 'dec' = 'enc') => {
@@ -67,7 +72,7 @@ export const UploadForm = () => {
   };
 
   const downloadFile = useCallback(async () => {
-    if (fileUrl && downloadLink.current) downloadLink.current.click();
+    if (fileUrl && fileDownloadLink.current) fileDownloadLink.current.click();
   }, [fileUrl]);
 
   const onEncrypt = (data: any) => {
@@ -129,8 +134,11 @@ export const UploadForm = () => {
           {t('Download')} {fileName.current}
         </Button>
       </ButtonGroup>
-      <a ref={downloadLink} download={fileName.current} href={fileUrl}>
+      <a ref={fileDownloadLink} download={fileName.current} href={fileUrl}>
         Download file
+      </a>
+      <a ref={keyDownloadLink} download={keyFileName.current} href={keyFileUrl}>
+        Download key file
       </a>
     </Flex>
   );
