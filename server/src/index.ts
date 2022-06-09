@@ -7,6 +7,7 @@ import compression from 'compression';
 import fs from 'fs';
 import busboy from 'busboy';
 import path from 'path';
+import { userRouter } from './user';
 
 const PORT = process.env.PORT || 5000;
 
@@ -131,5 +132,7 @@ app.get('/api/key', (req, res) => {
 app.post('/api/enc', (req, res) => processFile(req, res, 'enc'));
 
 app.post('/api/dec', (req, res) => processFile(req, res, 'dec'));
+
+app.use('/api/user', userRouter);
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
