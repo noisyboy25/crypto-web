@@ -45,7 +45,6 @@ export const UploadForm = () => {
     keyFileName.current = decodeURIComponent(match[1] || "");
     const url = URL.createObjectURL(await res.blob());
     setKeyFileUrl(url);
-    keyDownloadLink.current?.click();
   };
 
   const uploadFiles = async (data: any, mode: "enc" | "dec" = "enc") => {
@@ -75,6 +74,10 @@ export const UploadForm = () => {
     if (fileUrl && fileDownloadLink.current) fileDownloadLink.current.click();
   }, [fileUrl]);
 
+  const downloadKeyFile = useCallback(async () => {
+    if (keyFileUrl && keyDownloadLink.current) keyDownloadLink.current.click();
+  }, [keyFileUrl]);
+
   const onEncrypt = (data: any) => {
     console.log(data);
     uploadFiles(data, "enc");
@@ -90,6 +93,12 @@ export const UploadForm = () => {
       await downloadFile();
     })();
   }, [fileUrl, downloadFile]);
+
+  useEffect(() => {
+    (async () => {
+      await downloadKeyFile();
+    })();
+  }, [keyFileUrl, downloadKeyFile]);
 
   return (
     <Flex flexDirection="column" gap={4}>
