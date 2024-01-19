@@ -42,8 +42,8 @@ export const UploadForm = () => {
     const blobUrl = URL.createObjectURL(blob);
 
     const disposition = res.headers.get("Content-Disposition");
-    const match = /filename=(.*)/.exec(disposition || "");
-    if (!(match && match[1])) return;
+    const match = /filename=(.*)/.exec(disposition ?? "");
+    if (!match?.[1]) return;
 
     setKeyFileUrl(blobUrl);
     keyFileName.current = decodeURIComponent(match[1] || "");
@@ -71,8 +71,8 @@ export const UploadForm = () => {
     const blob = await res.blob();
     const blobUrl = `${URL.createObjectURL(blob)}`;
     const disposition = res.headers.get("Content-Disposition");
-    const match = /filename=(.*)/.exec(disposition || "");
-    if (!(match && match[1])) return;
+    const match = /filename=(.*)/.exec(disposition ?? "");
+    if (!match?.[1]) return;
 
     fileName.current = decodeURIComponent(match[1] || "");
     console.log(fileName.current);
