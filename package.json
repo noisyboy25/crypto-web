@@ -1,4 +1,5 @@
 {
+  "packageManager": "yarn@4.0.2",
   "scripts": {
     "start": "cd server && yarn start ",
     "dev:client": "cd client && yarn start",

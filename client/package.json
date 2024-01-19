@@ -2,37 +2,39 @@
   "name": "@crypto-web/client",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@chakra-ui/react": "^1.8.8",
-    "@emotion/react": "^11.0.0",
-    "@emotion/styled": "^11.0.0",
-    "@fortawesome/fontawesome-svg-core": "^6.1.1",
-    "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@fortawesome/react-fontawesome": "^0.1.18",
-    "@testing-library/jest-dom": "^5.9.0",
-    "@testing-library/react": "^13.2.0",
-    "@testing-library/user-event": "^14.1.1",
-    "@types/jest": "^27.5.0",
-    "@types/node": "^17.0.31",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.3",
-    "framer-motion": "^6.3.3",
-    "i18next": "^21.8.2",
-    "i18next-browser-languagedetector": "^6.1.4",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-hook-form": "^7.30.0",
-    "react-i18next": "^11.16.9",
-    "react-icons": "^4.3.1",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.3.5",
-    "web-vitals": "^2.1.4"
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.5",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "framer-motion": "^10.18.0",
+    "i18next": "^23.7.16",
+    "i18next-browser-languagedetector": "^7.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.3",
+    "react-i18next": "^14.0.0",
+    "react-icons": "^5.0.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vite-tsconfig-paths": "^4.3.1",
+    "web-vitals": "^3.5.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,6 +50,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:5000"
+  }
 }
